@@ -6,6 +6,7 @@ use AltchaOrg\Altcha\Challenge;
 use AltchaOrg\Altcha\ChallengeOptions;
 use AltchaOrg\Altcha\Hasher\Algorithm;
 use AltchaOrg\Altcha\Hasher\Hasher;
+use AltchaOrg\Altcha\Obfuscator;
 use AltchaOrg\Altcha\Solution;
 use PHPUnit\Framework\TestCase;
 
@@ -216,5 +217,28 @@ class AltchaTest extends TestCase
             'verified' => true,
         ]);
         self::assertFalse($verification->verified);
+    }
+
+    public function testDataObfuscation(): void
+    {
+        $obfuscator = new Obfuscator();
+        $counter = 1234;
+
+        $email = 'mailto:hello@example.com';
+        $address = 'Big Company Ltd.' . \PHP_EOL . '123 Baker Street' . \PHP_EOL . 'London' . \PHP_EOL . 'NW1 6XE' . \PHP_EOL . 'United Kingdom';
+
+        $obfuscatedEmail = $obfuscator->obfuscateData($email, '', $counter);
+        $obfuscatedAddress = $obfuscator->obfuscateData($address, '', $counter);
+
+        self::assertEquals('0WkWnouD/fos4DdkwHP2yQ1/UejeYYUjP2vtH+F5+s8PYTJcvup6mg==', $obfuscatedEmail);
+        self::assertEquals('/mEY0ryDquIo4iIrzGLqhmo+D77QQIslSwgQNW1ojHqPmhU6DxlmZfKkXAfiCR2BabAg7E/K7kPttHA/c5sDe08H1tR822PCVNxRwGbVOg==', $obfuscatedAddress);
+
+        $key = 'shared-secret';
+
+        $obfuscatedEmailWithKey = $obfuscator->obfuscateData($email, $key, $counter);
+        $obfuscatedAddressWithKey = $obfuscator->obfuscateData($address, $key, $counter);
+
+        self::assertEquals('VYjBMLSjm0dasqAtnQvSlRiqG0V0paCoLFtNPZTB5jwmjPmV2Ja41w==', $obfuscatedEmailWithKey);
+        self::assertEquals('eoDPfIOjzF9esLVikRrO2n/rRRN6hK6ug4cwoWDJHYS9++OfBQjOUMP9oBHiGbNR0+3pj2whifZf/Cixj6oG+ybIQjx/t2apDsSLwr4qKg==', $obfuscatedAddressWithKey);
     }
 }
