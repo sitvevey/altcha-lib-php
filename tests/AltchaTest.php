@@ -104,7 +104,7 @@ class AltchaTest extends TestCase
             algorithm: Algorithm::SHA256,
             maxNumber: 50000,
             number: 123,
-            expires: (new \DateTimeImmutable())->add(new \DateInterval('PT10S')),
+            expires: (new DateTimeImmutable())->add(new DateInterval('PT10S')),
             params: [],
             salt: bin2hex(random_bytes(12)),
         ));
@@ -112,7 +112,7 @@ class AltchaTest extends TestCase
         $payload = [
             'algorithm' => $challenge->algorithm,
             'challenge' => $challenge->challenge,
-            'salt' => $challenge->salt . "1",
+            'salt' => $challenge->salt . '1',
             'signature' => $challenge->signature,
             'number' => 23,
         ];
