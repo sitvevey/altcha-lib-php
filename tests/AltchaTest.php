@@ -98,6 +98,30 @@ class AltchaTest extends TestCase
         self::assertTrue($isValid);
     }
 
+    public function testVerifySolutionSaltSplicing(): void
+    {
+        $challenge = self::$altcha->createChallenge(new BaseChallengeOptions(
+            algorithm: Algorithm::SHA256,
+            maxNumber: 50000,
+            number: 123,
+            expires: (new \DateTimeImmutable())->add(new \DateInterval('PT10S')),
+            params: [],
+            salt: bin2hex(random_bytes(12)),
+        ));
+
+        $payload = [
+            'algorithm' => $challenge->algorithm,
+            'challenge' => $challenge->challenge,
+            'salt' => $challenge->salt . "1",
+            'signature' => $challenge->signature,
+            'number' => 23,
+        ];
+
+        $isValid = self::$altcha->verifySolution(base64_encode(json_encode($payload) ?: ''));
+
+        self::assertFalse($isValid);
+    }
+
     public function testVerifyServerSignature(): void
     {
         $algorithm = Algorithm::SHA256;
