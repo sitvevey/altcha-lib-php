@@ -154,7 +154,7 @@ class Altcha
      */
     private function extractParams(Payload $payload): array
     {
-        $saltParts = explode('?', rtrim($payload->salt, ';'));
+        $saltParts = explode('?', $payload->salt);
         if (\count($saltParts) > 1) {
             parse_str($saltParts[1], $params);
 

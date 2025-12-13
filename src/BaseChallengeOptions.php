@@ -39,8 +39,8 @@ class BaseChallengeOptions
         }
 
         // Add a delimiter to prevent parameter splicing
-        if (!str_ends_with($salt, ';')) {
-            $salt .= ';';
+        if (!str_ends_with($salt, '&')) {
+            $salt .= '&';
         }
 
         $this->salt = $salt;
